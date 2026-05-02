@@ -343,3 +343,63 @@ ul {
   margin-bottom: 12px;
   line-height: 1.7;
 }
+
+/* Mobile dropdown navigation */
+
+.mobile-nav {
+  display: none;
+}
+
+.desktop-nav {
+  display: flex;
+}
+
+/* Smartphone only */
+@media screen and (max-width: 700px) {
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .mobile-nav {
+    display: block !important;
+    background-color: #1f3a5f;
+    padding: 8px 16px;
+  }
+
+  .mobile-nav details {
+    color: #ffffff;
+  }
+
+  .mobile-nav summary {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px 0;
+    color: #ffffff;
+    list-style: none;
+  }
+
+  .mobile-nav summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-nav summary::after {
+    content: " ▼";
+    font-size: 0.9em;
+  }
+
+  .mobile-nav details[open] summary::after {
+    content: " ▲";
+  }
+
+  .mobile-nav a {
+    display: block;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .mobile-nav a:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+}
