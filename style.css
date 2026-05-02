@@ -208,17 +208,20 @@ ul {
 
 .button-link {
   display: inline-block;
-  padding: 8px 16px;
+  padding: 0.55em 1.1em;
+  margin: 0.3em 0.2em;
   background-color: #2f6f73;
   color: #ffffff;
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: bold;
+  border-radius: 6px;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .button-link:hover {
   background-color: #24585b;
   color: #ffffff;
+  text-decoration: none;
 }
 
 @media screen and (max-width: 800px) {
