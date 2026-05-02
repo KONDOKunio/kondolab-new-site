@@ -403,3 +403,24 @@ ul {
     background-color: rgba(255, 255, 255, 0.12);
   }
 }
+
+/* Final navigation control */
+/* PC: show normal horizontal menu only */
+.mobile-nav {
+  display: none !important;
+}
+
+.desktop-nav {
+  display: flex !important;
+}
+
+/* Smartphone: show dropdown menu only */
+@media screen and (max-width: 700px) {
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .mobile-nav {
+    display: block !important;
+  }
+}
