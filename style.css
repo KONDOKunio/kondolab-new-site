@@ -209,7 +209,7 @@ ul {
 .button-link {
   display: inline-block;
   padding: 8px 16px;
-  background: #1f3a5f;
+  background-color: #2f6f73;
   color: #ffffff;
   text-decoration: none;
   border-radius: 8px;
@@ -217,8 +217,8 @@ ul {
 }
 
 .button-link:hover {
-  background: #2d527f;
-  text-decoration: none;
+  background-color: #24585b;
+  color: #ffffff;
 }
 
 @media screen and (max-width: 800px) {
