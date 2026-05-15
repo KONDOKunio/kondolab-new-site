@@ -453,29 +453,41 @@ ul {
     padding-left: 1.2em;
   }
 }
-/* Hide empty image areas in research pages */
-.research-image.empty-image {
-  display: none;
-}
-
-.no-image-content .research-text {
-  margin-left: 0;
-  max-width: 100%;
-}
-
+/* Mobile layout adjustment for research pages without images */
 @media screen and (max-width: 768px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .research-card {
+    padding: 24px 20px;
+  }
+
   .research-content.no-image-content {
     display: block;
   }
 
-  .research-image.empty-image {
-    display: none !important;
+  .research-content.no-image-content .research-image.empty-image {
+    display: none;
   }
 
-  .no-image-content .research-text {
+  .research-content.no-image-content .research-text {
     width: 100%;
-    max-width: 100%;
-    margin-left: 0 !important;
-    padding-left: 0 !important;
+    max-width: none;
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  .research-content.no-image-content .research-text h3,
+  .research-content.no-image-content .research-text p,
+  .research-content.no-image-content .research-text li {
+    max-width: none;
+    text-align: left;
+  }
+
+  .research-content.no-image-content .research-text ol,
+  .research-content.no-image-content .research-text ul {
+    padding-left: 1.2em;
   }
 }
