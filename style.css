@@ -453,3 +453,29 @@ ul {
     padding-left: 1.2em;
   }
 }
+/* Hide empty image areas in research pages */
+.research-image.empty-image {
+  display: none;
+}
+
+.no-image-content .research-text {
+  margin-left: 0;
+  max-width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  .research-content.no-image-content {
+    display: block;
+  }
+
+  .research-image.empty-image {
+    display: none !important;
+  }
+
+  .no-image-content .research-text {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+}
