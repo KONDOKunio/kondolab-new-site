@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Media Faculty Blog Posts（内容別分類）| Kunio Kondo Laboratory</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    :root { --line:#d9dee7; --soft:#f5f7fa; --accent:#255ea8; }
+    html { scroll-behavior:smooth; }
+    .category-nav { display:flex; flex-wrap:wrap; gap:.55rem; margin:1rem 0; }
+    .category-nav a { display:inline-block; padding:.45rem .75rem; border:1px solid var(--line);
+      border-radius:999px; text-decoration:none; background:#fff; }
+    .notice { padding:1rem 1.2rem; background:var(--soft); border-left:4px solid var(--accent);
+      margin:1rem 0 1.5rem; }
+    .filter-box { display:grid; grid-template-columns:1fr auto; gap:.6rem; margin:1rem 0; }
+    .filter-box input { width:100%; padding:.65rem .75rem; border:1px solid var(--line); border-radius:.4rem; }
+    .filter-box button { padding:.65rem 1rem; }
+    .section-count { font-size:.88em; font-weight:normal; color:#555; }
+    details { margin:.65rem 0 1.2rem; border:1px solid var(--line); border-radius:.5rem; overflow:hidden; }
+    summary { cursor:pointer; font-weight:700; padding:.8rem 1rem; background:var(--soft); }
+    details > div { padding:.2rem 1rem 1rem; }
+    .subgroup { margin-top:1.1rem; }
+    .subgroup h4 { margin:.6rem 0; padding-bottom:.3rem; border-bottom:1px solid var(--line); }
+    .blog-list { margin-top:.4rem; }
+    .blog-list li { margin:.42rem 0; line-height:1.55; }
+    .blog-list strong { display:inline-block; min-width:7.2em; margin-right:.4rem; }
+    .loading, .error { padding:1.2rem; text-align:center; }
+    .error { color:#8a1f11; background:#fff4f2; border:1px solid #efc3bc; }
+    .back-top { text-align:right; margin:.8rem 0; }
+    .back-top a { font-size:.9em; }
+    .hidden-by-search { display:none !important; }
+    @media (max-width:700px) {
+      .filter-box { grid-template-columns:1fr; }
+      .blog-list strong { min-width:auto; display:block; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="top">
+    <div class="header-inner">
+      <h1>Kunio Kondo Laboratory</h1>
+      <p>Computer Graphics / Content Creation / AI-Assisted Education</p>
+    </div>
+  </header>
+
+  <nav class="site-nav">
+    <a href="../index.html">Home</a>
+    <a href="../profile.html">Profile</a>
+    <a href="../research/index.html">Research</a>
+    <a href="../publications.html">Publications</a>
+    <a href="../education.html">Education</a>
+    <a href="../society.html">Society</a>
+  </nav>
+
+  <main class="container">
+    <section>
+      <h2>「メディア学部ブログ」の近藤関係記事：内容別分類</h2>
+      <p>
+        元の一覧ページから記事の日付・リンク先・リンク題目をそのまま読み込み、
+        内容別に分類して表示します。国際交流は国別に分け、さらに大学・機関別に整理しています。
+      </p>
+      <div class="notice">
+        <strong>リンク題目は変更していません。</strong>
+        一つの記事が複数の内容に関係する場合は、複数の分類に表示されます。
+        「全記事（年代順）」では元ページと同じ順序で確認できます。
+      </div>
+
+      <div class="category-nav">
+        <a href="#international">国際交流（国・大学別）</a>
+        <a href="#society">学会・国際会議・研究会</a>
+        <a href="#awards">受賞・表彰</a>
+        <a href="#education">講義・授業・演習</a>
+        <a href="#research">研究紹介・研究発表</a>
+        <a href="#publications">出版・掲載・メディア</a>
+        <a href="#students">学生・卒業生・留学生</a>
+        <a href="#outreach">公開講座・オープンキャンパス</a>
+        <a href="#all">全記事（年代順）</a>
+      </div>
+
+      <div class="filter-box">
+        <input id="searchBox" type="search" placeholder="題目・国名・大学名などで絞り込み">
+        <button id="clearSearch" type="button">検索解除</button>
+      </div>
+    </section>
+
+    <div id="status" class="loading">元ページから記事一覧を読み込んでいます。</div>
+    <div id="content" hidden></div>
+  </main>
+
+<script>
+(() => {
+  // 分類ページを元ページと別名で置く場合は、このまま使用できます。
+  // 元ページを置き換える場合は、元の一覧を別名で保存し、下記URLを書き換えてください。
+  const SOURCE_URL = './kondo-media-blog.html';
+
+  const countryRules = [
+    { country:'タイ', keys:['タイ','Thailand','チュラロンコン','Chulalongkorn','キンモンクット','キングモンクート','KMUTT','Thammasat','Thammasart','タマサート'] },
+    { country:'マレーシア', keys:['マレーシア','Malaysia','Management & Science','Management &amp; Science','MSU','Taylor\\'s','Taylor’s','テーラーズ'] },
+    { country:'インドネシア', keys:['インドネシア','indonesia','Indonesia','バンドン工科','Telkom','UDINUS','Udinus','Dian Nuswantoro','AMIKOM','Multimedia Nusantara','マルチメディア大学','スラバヤ工科','UDAYANA','Udayana','Semarang','スマラン','ジャカルタ','バリ島','Borobudur','Prambanan','Conmedia','ICOIACT'] },
+    { country:'スウェーデン', keys:['スウェーデン','スウエーデン','Sweden','ウプサラ','Uppsala','Gotland','ゴットランド'] },
+    { country:'フランス', keys:['フランス','France','パリ','Paris','ISART'] },
+    { country:'ポーランド', keys:['ポーランド','Poland','シレジア','Silesia','Cieszyn','Katowice','ポ日大','日本情報工科大学'] },
+    { country:'台湾', keys:['台湾','Taiwan','台南','台湾大学','成功大学'] },
+    { country:'香港', keys:['香港','Hong Kong','香港城市大学','香港理工大学'] },
+    { country:'米国', keys:['米国','アメリカ','USC','南カリフォルニア大学','Chapman','ハリウッド'] },
+    { country:'中国', keys:['中国','China','浙江大学','北京大学'] },
+    { country:'デンマーク', keys:['デンマーク','Denmark','Kolding','LEGO','Poul Henningsen'] },
+    { country:'ドイツ', keys:['ドイツ','独Harz','Harz University'] },
+    { country:'インド', keys:['インドの','India'] },
+    { country:'イタリア', keys:['イタリア','Italy','ミラノ工科'] },
+    { country:'英国・スコットランド', keys:['スコットランド','Abertay'] },
+    { country:'韓国', keys:['韓国','Korea'] }
+  ];
+
+  const universityRules = [
+    ['タイ','チュラロンコン大学',['チュラロンコン','Chulalongkorn']],
+    ['タイ','キングモンクット工科大学トンブリ（KMUTT）',['キンモンクット','キングモンクート','KMUTT','KTCIM']],
+    ['タイ','タマサート大学',['Thammasat','Thammasart','タマサート']],
+    ['タイ','タイ王国大使館・その他',['タイ王国大使館']],
+    ['マレーシア','Management & Science University（MSU）',['Management & Science','Management &amp; Science','MSU']],
+    ['マレーシア',"Taylor's University",["Taylor's",'Taylor’s','テーラーズ']],
+    ['インドネシア','バンドン工科大学（ITB）',['バンドン工科']],
+    ['インドネシア','Telkom University',['Telkom']],
+    ['インドネシア','Universitas Dian Nuswantoro（UDINUS）',['UDINUS','Udinus','Dian Nuswantoro']],
+    ['インドネシア','University of AMIKOM Yogyakarta',['AMIKOM']],
+    ['インドネシア','Universitas Multimedia Nusantara（UMN）',['Multimedia Nusantara','マルチメディア大学','UMN']],
+    ['インドネシア','スラバヤ工科大学',['スラバヤ工科']],
+    ['インドネシア','Udayana University',['UDAYANA','Udayana']],
+    ['インドネシア','その他の大学・機関',['セントラルジャバ','Politeknik Seni','ゲーム会社','動画協会','バリ産業局']],
+    ['スウェーデン','ウプサラ大学・Campus Gotland',['ウプサラ','Uppsala','Gotland','ゴットランド']],
+    ['フランス','ISART Digital',['ISART']],
+    ['ポーランド','シレジア大学',['シレジア大学','University of Silesia','Silesia in Katowice']],
+    ['ポーランド','ポーランド日本情報工科大学',['ポーランド日本情報工科','ポ日大']],
+    ['台湾','国立台湾大学',['国立台湾大学','台湾大学']],
+    ['台湾','成功大学',['成功大学']],
+    ['香港','香港城市大学',['香港城市大学']],
+    ['香港','香港理工大学',['香港理工大学']],
+    ['米国','南カリフォルニア大学（USC）',['南カリフォルニア大学','USC']],
+    ['米国','Chapman University',['Chapman']],
+    ['中国','浙江大学',['浙江大学']],
+    ['中国','北京大学',['北京大学']],
+    ['デンマーク','Design School Kolding',['Design School Kolding','Kolding']],
+    ['ドイツ','Harz University',['Harz University','独Harz']],
+    ['イタリア','ミラノ工科大学',['ミラノ工科']],
+    ['英国・スコットランド','Abertay University',['Abertay']]
+  ];
+
+  const topicRules = {
+    society: ['学会','国際会議','シンポジウム','フォーラム','研究会','SIGGRAPH','ADADA','IEVC','ICGG','IWAIT','NICOGRAPH','CEDEC','CUMULUS','Conmedia','ICOIACT','KTCIM','合宿','conference','Conference','Festival'],
+    awards: ['受賞','表彰','Award','賞受賞','フェロー','推薦論文','文部科学大臣賞','企業賞','ポスター優秀賞','BestPaper','Best Paper','Best Poster','学部長賞'],
+    education: ['講義','授業','演習','ゼミ','ワークショップ','Workshop','Game Jam','サマーコース','Summer Course','教育','学習','フィールドワーク','卒業研究発表','卒研発表','創成課題','博士論文公開発表'],
+    research: ['研究紹介','研究発表','研究成果','研究室','博士論文','卒業研究','論文','制作手法','支援手法','技術研究','CG研究','研究交流'],
+    publications: ['出版','発行','掲載','書評','教科書','書籍','キーワードブック','月刊','App Store','AppStore','公開されました','リリース'],
+    students: ['学生','留学生','インターン','卒業生','OB','大学院生','卒研生','研究生','博士課程','修士','三年生','3年生'],
+    outreach: ['公開講座','オープンキャンパス','高校生','サイエンスキャンプ','講演会','特別講演','展示','出展','試遊']
+  };
+
+  const topicTitles = {
+    society:'学会・国際会議・研究会',
+    awards:'受賞・表彰',
+    education:'講義・授業・演習',
+    research:'研究紹介・研究発表',
+    publications:'出版・掲載・メディア',
+    students:'学生・卒業生・留学生',
+    outreach:'公開講座・オープンキャンパス・展示'
+  };
+
+  const normalized = s => (s || '').replace(/\s+/g,' ').trim();
+  const includesAny = (text, keys) => keys.some(k => text.toLowerCase().includes(k.toLowerCase()));
+
+  function cloneArticle(article) {
+    const li = document.createElement('li');
+    li.dataset.search = article.searchText;
+    const strong = document.createElement('strong');
+    strong.textContent = article.date;
+    const span = document.createElement('span');
+    const a = document.createElement('a');
+    a.href = article.href;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.innerHTML = article.titleHTML; // 元ページのリンク題目を保持
+    span.appendChild(a);
+    li.append(strong, span);
+    return li;
+  }
+
+  function articleList(articles) {
+    const ul = document.createElement('ul');
+    ul.className = 'blog-list';
+    articles.forEach(a => ul.appendChild(cloneArticle(a)));
+    return ul;
+  }
+
+  function headingWithCount(tag, title, count) {
+    const h = document.createElement(tag);
+    h.append(document.createTextNode(title + ' '));
+    const span = document.createElement('span');
+    span.className = 'section-count';
+    span.textContent = `（${count}件）`;
+    h.appendChild(span);
+    return h;
+  }
+
+  function makeTopSection(id, title, articles) {
+    const section = document.createElement('section');
+    section.id = id;
+    section.className = 'research-card';
+    section.appendChild(headingWithCount('h2', title, articles.length));
+    section.appendChild(articleList(articles));
+    const back = document.createElement('div');
+    back.className = 'back-top';
+    back.innerHTML = '<a href="#top">ページ上部へ戻る</a>';
+    section.appendChild(back);
+    return section;
+  }
+
+  async function load() {
+    const status = document.getElementById('status');
+    const content = document.getElementById('content');
+    try {
+      const response = await fetch(SOURCE_URL, {cache:'no-store'});
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const sourceText = await response.text();
+      const doc = new DOMParser().parseFromString(sourceText, 'text/html');
+      const nodes = [...doc.querySelectorAll('ul.blog-list > li')];
+
+      const articles = nodes.map((li, index) => {
+        const a = li.querySelector('a');
+        const strong = li.querySelector('strong');
+        const titleHTML = a ? a.innerHTML : '';
+        const titleText = normalized(a ? a.textContent : '');
+        const date = normalized(strong ? strong.textContent : '');
+        return {
+          index, date, href:a ? a.href : '#', titleHTML, titleText,
+          searchText: normalized(`${date} ${titleText}`).toLowerCase()
+        };
+      }).filter(a => a.titleText && a.href);
+
+      if (!articles.length) throw new Error('記事一覧を取得できませんでした。');
+
+      // 国際交流
+      const international = {};
+      countryRules.forEach(rule => {
+        const countryArticles = articles.filter(a => includesAny(a.titleText, rule.keys));
+        if (!countryArticles.length) return;
+        const groups = {};
+        universityRules.filter(r => r[0] === rule.country).forEach(([country, university, keys]) => {
+          const list = countryArticles.filter(a => includesAny(a.titleText, keys));
+          if (list.length) groups[university] = list;
+        });
+        const assigned = new Set(Object.values(groups).flat().map(a => a.index));
+        const other = countryArticles.filter(a => !assigned.has(a.index));
+        if (other.length) groups['国・地域全般／その他'] = other;
+        international[rule.country] = groups;
+      });
+
+      const internationalSection = document.createElement('section');
+      internationalSection.id = 'international';
+      internationalSection.className = 'research-card';
+      const intlUnique = new Set();
+      Object.values(international).forEach(gs => Object.values(gs).flat().forEach(a => intlUnique.add(a.index)));
+      internationalSection.appendChild(headingWithCount('h2','国際交流：国別・大学／機関別',intlUnique.size));
+      const intro = document.createElement('p');
+      intro.textContent = '国名を開くと、大学・機関ごとの記事一覧を表示します。';
+      internationalSection.appendChild(intro);
+
+      Object.entries(international).forEach(([country, groups], i) => {
+        const unique = new Set(Object.values(groups).flat().map(a => a.index));
+        const details = document.createElement('details');
+        if (i < 3) details.open = true;
+        const summary = document.createElement('summary');
+        summary.textContent = `${country}（${unique.size}件）`;
+        details.appendChild(summary);
+        const body = document.createElement('div');
+        Object.entries(groups).forEach(([university, list]) => {
+          const subgroup = document.createElement('div');
+          subgroup.className = 'subgroup';
+          subgroup.appendChild(headingWithCount('h4', university, list.length));
+          subgroup.appendChild(articleList(list));
+          body.appendChild(subgroup);
+        });
+        details.appendChild(body);
+        internationalSection.appendChild(details);
+      });
+      const intlBack = document.createElement('div');
+      intlBack.className='back-top';
+      intlBack.innerHTML='<a href="#top">ページ上部へ戻る</a>';
+      internationalSection.appendChild(intlBack);
+      content.appendChild(internationalSection);
+
+      // 内容別
+      Object.entries(topicRules).forEach(([id, keys]) => {
+        const list = articles.filter(a => includesAny(a.titleText, keys));
+        content.appendChild(makeTopSection(id, topicTitles[id], list));
+      });
+
+      // 全記事
+      content.appendChild(makeTopSection('all','全記事（元ページと同じ年代順）',articles));
+
+      status.remove();
+      content.hidden = false;
+
+      const searchBox = document.getElementById('searchBox');
+      function applySearch() {
+        const q = normalized(searchBox.value).toLowerCase();
+        document.querySelectorAll('#content .blog-list li').forEach(li => {
+          li.classList.toggle('hidden-by-search', !!q && !li.dataset.search.includes(q));
+        });
+      }
+      searchBox.addEventListener('input', applySearch);
+      document.getElementById('clearSearch').addEventListener('click', () => {
+        searchBox.value='';
+        applySearch();
+        searchBox.focus();
+      });
+    } catch (e) {
+      status.className = 'error';
+      status.innerHTML =
+        '<strong>記事一覧を読み込めませんでした。</strong><br>' +
+        'この分類ページをWebサーバー上で開き、元ページ「kondo-media-blog.html」と同じフォルダーに置いてください。<br>' +
+        `<small>${String(e.message || e)}</small>`;
+    }
+  }
+  load();
+})();
+</script>
+</body>
+</html>
